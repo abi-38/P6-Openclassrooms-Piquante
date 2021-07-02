@@ -19,7 +19,6 @@ mongoose.connect(process.env.DB_MONGODB, // cacher les données
 
 const app = express();
 app.use(helmet()); // utilisation de helmet pour la sécurité
-// app.set('trust proxy', 1); // pour le module cookie-session
 
 /* CORS - Permet d'accéder au front - lien entre les 2 serveurs grâce aux autorisations ci-dessous */
 app.use((req, res, next) => {
