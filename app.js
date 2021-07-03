@@ -1,8 +1,8 @@
 const express = require('express'); // installation du module express qui permet de coder plus facilement et rapidement en node dans le back
 const helmet = require('helmet'); // module de sécurité http pour l'app helmet - installe des http headers différents
-require('dotenv').config(); // cache le lien mongoose bdd
+require('dotenv').config(); // cache le lien mongoose vers bdd + TOKEN
 
-const bodyParser = require('body-parser'); // permet de lire les éléments parser (format json) reçu par le front, cf. ligne 26
+const bodyParser = require('body-parser'); // permet de lire les éléments parser (format json) reçu par le front, cf. ligne 31
 const mongoose = require('mongoose'); // installation du module mongoose pour utiliser les formules comme Model.save(), Model.updateOne()... et envoyer des modèles bien rangés à la bdd
 
 const path = require('path'); // lecture du chemin d'accès aux images

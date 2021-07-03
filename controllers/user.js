@@ -6,18 +6,22 @@ require('dotenv').config();
 
 // fonction signup pour créer un utilisateur - testée ok 
 exports.signup = (req, res, next) => {
-    bcrypt.hash(req.body.password, 10) 
-    // fonction pour crypter le mdp, on lui passe en paramètre, 10 est le nombre de tour pour le hachage (on ne veut pas que ce soit trop long)
-    .then(hash => { // hash est le résultat de bcrypt.hash (on l'appelle comme on veut)
-    const user = new User({ // création d'un nouvel utilisateur
-        email: req.body.email,
-        password: hash // à password on lui passe le résultat du mdp hashé
-    });
-    user.save() // enregistrement de ce nouvel utilisateur dans la bdd (avec le mdp crypté)
-    .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
-    .catch(error => res.status(400).json({ error }));
-    })
-    .catch(error => res.status(500).json({ error }));
+    if (ValidationMail(req.body.password)) {
+        bcrypt.hash(req.body.password, 10) 
+        // fonction pour crypter le mdp, on lui passe en paramètre, 10 est le nombre de tour pour le hachage (on ne veut pas que ce soit trop long)
+        .then(hash => { // hash est le résultat de bcrypt.hash (on l'appelle comme on veut)
+        const user = new User({ // création d'un nouvel utilisateur
+            email: req.body.email, // ajouter un vérrou sur le type ici
+            password: hash // à password on lui passe le résultat du mdp hashé -> ajouter un verrou
+        });
+        user.save() // enregistrement de ce nouvel utilisateur dans la bdd (avec le mdp crypté)
+        .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
+        .catch(error => res.status(400).json({ error }));
+        })
+        .catch(error => res.status(500).json({ error }));
+    } else {
+        return error;
+    }
 };
 
 // fonction login pour se connecté une fois l'utilisateur créé - testée ok 
@@ -40,7 +44,7 @@ exports.login = (req, res, next) => {
                 token: jwt.sign(
                     // grâce à jwt.sign on crée un token de connexion qui sera vérifié
                     { userId: user._id }, // on encode le userId en début de token (pour affiliation à un objet lui seul pourra le modifier)
-                    process.env.TOKEN, // RANDOM_TOKEN_SECRET - pahdtcps521199cjneyslfh1545sljfsss1145
+                    process.env.TOKEN, // RANDOM_TOKEN_SECRET - pahdtcps521199cjneyslfh1545sljfsss1145 -> celui-ci sera encodé !
                     { expiresIn: '6 hours' } // le token n'est plus valide au-delà de 6h
                 )
             });
@@ -49,3 +53,18 @@ exports.login = (req, res, next) => {
     })
     .catch(error => res.status(500).json({ error }));
 };
+
+function ValidationMail(mail) {
+	var regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+	if (mail.match(regex))
+	{
+		alert("Adresse mail valide");
+        return true;
+	}
+	else
+	{
+		alert("Adresse mail non valide");
+        return false;
+	}
+}
